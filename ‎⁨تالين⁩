@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة تحصيلي فيزياء - حالات المادة</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        #question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #34495e;
+        }
+        .option {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            text-align: right;
+        }
+        .option:hover {
+            background-color: #bdc3c7;
+        }
+        #next-btn, #submit-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #next-btn:hover, #submit-btn:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .correct {
+            background-color: #2ecc71 !important;
+            color: white;
+        }
+        .incorrect {
+            background-color: #e74c3c !important;
+            color: white;
+        }
+        #progress {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>مسابقة تحصيلي فيزياء - حالات المادة</h1>
+        <div id="progress"></div>
+        <div id="question"></div>
+        <div id="options"></div>
+        <button id="next-btn" style="display: none;">السؤال التالي</button>
+        <button id="submit-btn" style="display: none;">إنهاء الاختبار</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "ما هي الحالات الأساسية للمادة؟",
+                options: ["صلبة وسائلة وغازية", "صلبة وسائلة فقط", "سائلة وغازية فقط", "صلبة وغازية فقط"],
+                answer: 0
+            },
+            {
+                question: "أي من الحالات التالية تتميز بشكل وحجم ثابتين؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 0
+            },
+            {
+                question: "ما هي الحالة التي تتميز بحجم ثابت وشكل متغير؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 1
+            },
+            {
+                question: "أي حالة من حالات المادة لها أقل كثافة؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 2
+            },
+            {
+                question: "ما هي العملية التي تتحول فيها المادة من الحالة الصلبة إلى الحالة السائلة؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التسامي"],
+                answer: 2
+            },
+            {
+                question: "ما هو اسم التحول من الحالة السائلة إلى الحالة الغازية؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التجمد"],
+                answer: 0
+            },
+            {
+                question: "ما هي العملية التي تتحول فيها المادة من الحالة الغازية إلى الحالة السائلة؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التسامي"],
+                answer: 1
+            },
+            {
+                question: "أي من الحالات التالية تكون فيها الجزيئات في حالة حركة مستمرة وعشوائية؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "جميع ما سبق"],
+                answer: 3
+            },
+            {
+                question: "ما هي درجة الحرارة التي يتحول عندها الماء من الحالة السائلة إلى الحالة الصلبة؟",
+                options: ["0 درجة مئوية", "100 درجة مئوية", "32 درجة فهرنهايت", "-273 درجة مئوية"],
+                answer: 0
+            },
+            {
+                question: "ما هو اسم النقطة التي تتساوى عندها الضغوط البخارية للحالات الثلاث للمادة؟",
+                options: ["النقطة الحرجة", "النقطة الثلاثية", "نقطة الغليان", "نقطة التجمد"],
+                answer: 1
+            },
+            {
+                question: "ما هي الحالة الرابعة للمادة؟",
+                options: ["الصلبة", "السائلة", "الغازية", "البلازما"],
+                answer: 3
+            },
+            {
+                question: "أي من الحالات التالية تتميز بأعلى طاقة حركية للجزيئات؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 3
+            },
+            {
+                question: "ما هو اسم التحول المباشر من الحالة الصلبة إلى الحالة الغازية دون المرور بالحالة السائلة؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التسامي"],
+                answer: 3
+            },
+            {
+                question: "ما هي الخاصية التي تميز السوائل والغازات عن المواد الصلبة؟",
+                options: ["الشكل الثابت", "القابلية للانضغاط", "الحجم الثابت", "السيولة"],
+                answer: 3
+            },
+            {
+                question: "ما هو تأثير زيادة الضغط على درجة غليان السائل؟",
+                options: ["يزيد من درجة الغليان", "يقلل من درجة الغليان", "لا يؤثر على درجة الغليان", "يجعل الغليان مستحيلاً"],
+                answer: 0
+            },
+            {
+                question: "ما هي الظاهرة التي تحدث عندما يتحول السائل إلى غاز عند درجة حرارة أقل من نقطة غليانه؟",
+                options: ["التكثف", "التبخر", "الانصهار", "التسامي"],
+                answer: 1
+            },
+            {
+                question: "ما هو اسم الطاقة اللازمة لتحويل المادة من الحالة السائلة إلى الحالة الغازية؟",
+                options: ["الحرارة النوعية", "حرارة الانصهار", "حرارة التبخر", "الطاقة الحركية"],
+                answer: 2
+            },
+            {
+                question: "ما هي الحالة التي تكون فيها قوى التماسك بين الجزيئات أقوى ما يمكن؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 0
+            },
+            {
+                question: "ما هو تأثير زيادة درجة الحرارة على حجم الغاز عند ثبات الضغط؟",
+                options: ["يزداد الحجم", "يقل الحجم", "لا يتغير الحجم", "يتجمد الغاز"],
+                answer: 0
+            },
+            {
+                question: "ما هي الظاهرة التي تحدث عندما يتحول الغاز مباشرة إلى الحالة الصلبة دون المرور بالحالة السائلة؟",
+                options: ["التكثف", "التبخر", "الانصهار", "الترسيب"],
+                answer: 3
+            },
+            {
+                question: "أي من الحالات التالية تكون فيها المسافات بين الجزيئات أكبر ما يمكن؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 2
+            },
+            {
+                question: "ما هو اسم النقطة التي يتساوى عندها الضغط البخاري للسائل مع الضغط الخارجي؟",
+                options: ["نقطة التجمد", "نقطة الانصهار", "النقطة الحرجة", "نقطة الغليان"],
+                answer: 3
+            },
+            {
+                question: "ما هي الخاصية التي تميز الغازات عن السوائل والمواد الصلبة؟",
+                options: ["الكثافة العالية", "القابلية العالية للانضغاط", "الشكل الثابت", "قوى التماسك القوية"],
+                answer: 1
+            },
+            {
+                question: "ما هو تأثير زيادة درجة الحرارة على حركة جزيئات المادة؟",
+                options: ["تقل سرعة الجزيئات", "تزداد سرعة الجزيئات", "لا تتأثر سرعة الجزيئات", "تتوقف الجزيئات عن الحركة"],
+                answer: 1
+            },
+            {
+                question: "ما هي الحالة التي تكون فيها الطاقة الحركية للجزيئات أقل ما يمكن؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 0
+            },
+            {
+                question: "ما هو اسم الظاهرة التي تحدث عندما يتبخر السائل من سطحه فقط؟",
+                options: ["الغليان", "التكثف", "التبخر السطحي", "الانصهار"],
+                answer: 2
+            },
+            {
+                question: "ما هي العملية التي تحدث عندما يتحول الماء من الحالة السائلة إلى الحالة الصلبة؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التجمد"],
+                answer: 3
+            },
+            {
+                question: "ما هو تأثير زيادة الضغط على حجم الغاز عند ثبات درجة الحرارة؟",
+                options: ["يزداد الحجم", "يقل الحجم", "لا يتغير الحجم", "يتحول الغاز إلى سائل"],
+                answer: 1
+            },
+            {
+                question: "ما هي الخاصية التي تميز المواد الصلبة عن السوائل والغازات؟",
+                options: ["الشكل المتغير", "الحجم المتغير", "الشكل والحجم الثابتين", "القابلية العالية للانضغاط"],
+                answer: 2
+            },
+            {
+                question: "ما هو اسم الطاقة اللازمة لتحويل المادة من الحالة الصلبة إلى الحالة السائلة؟",
+                options: ["الحرارة النوعية", "حرارة الانصهار", "حرارة التبخر", "الطاقة الحركية"],
+                answer: 1
+            },
+            {
+                question: "ما هي الحالة التي تكون فيها قوى التنافر بين الجزيئات أقوى من قوى التجاذب؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 2
+            },
+            {
+                question: "ما هو تأثير انخفاض درجة الحرارة على حركة جزيئات المادة؟",
+                options: ["تزداد سرعة الجزيئات", "تقل سرعة الجزيئات", "لا تتأثر سرعة الجزيئات", "تنفصل الجزيئات عن بعضها"],
+                answer: 1
+            },
+            {
+                question: "ما هي الظاهرة التي تحدث عندما يتحول الغاز إلى سائل عند تبريده؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التسامي"],
+                answer: 1
+            },
+            {
+                question: "ما هو اسم النقطة التي يتساوى عندها الضغط البخاري للمادة مع الضغط الجوي القياسي؟",
+                options: ["نقطة التجمد القياسية", "نقطة الغليان القياسية", "النقطة الحرجة", "النقطة الثلاثية"],
+                answer: 1
+            },
+            {
+                question: "ما هي الحالة التي تكون فيها الجزيئات في حالة اهتزاز مستمر حول مواقع ثابتة؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 0
+            },
+            {
+                question: "ما هو تأثير زيادة درجة الحرارة على الضغط البخاري للسائل؟",
+                options: ["يقل الضغط البخاري", "يزداد الضغط البخاري", "لا يتغير الضغط البخاري", "ينعدم الضغط البخاري"],
+                answer: 1
+            },
+            {
+                question: "ما هي الخاصية التي تميز السوائل عن الغازات والمواد الصلبة؟",
+                options: ["الشكل الثابت", "الحجم الثابت مع الشكل المتغير", "القابلية العالية للانضغاط", "عدم وجود قوى تماسك"],
+                answer: 1
+            },
+            {
+                question: "ما هو اسم الظاهرة التي تحدث عندما يتحول السائل إلى غاز في جميع أنحاء السائل؟",
+                options: ["التبخر السطحي", "التكثف", "الغليان", "التسامي"],
+                answer: 2
+            },
+            {
+                question: "ما هي العملية التي تحدث عندما يتحول الجليد مباشرة إلى بخار الماء دون المرور بالحالة السائلة؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التسامي"],
+                answer: 3
+            },
+            {
+                question: "ما هو تأثير زيادة المساحة السطحية على معدل التبخر؟",
+                options: ["يقل معدل التبخر", "يزداد معدل التبخر", "لا يتأثر معدل التبخر", "يتوقف التبخر تمامًا"],
+                answer: 1
+            },
+            {
+                question: "ما هي الحالة التي تكون فيها الجزيئات في حالة حركة عشوائية مع وجود بعض قوى التماسك؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 1
+            },
+            {
+                question: "ما هو اسم القانون الذي يصف العلاقة بين ضغط الغاز وحجمه عند ثبات درجة الحرارة؟",
+                options: ["قانون شارل", "قانون بويل", "قانون جاي لوساك", "قانون أفوجادرو"],
+                answer: 1
+            },
+            {
+                question: "ما هي الظاهرة التي تحدث عندما يتحول السائل إلى غاز عند درجة حرارة أقل من نقطة غليانه بسبب انخفاض الضغط؟",
+                options: ["التبخر العادي", "التكثف", "الغليان", "الغليان الومضي"],
+                answer: 3
+            },
+            {
+                question: "ما هو تأثير زيادة تركيز الأملاح في الماء على درجة غليانه؟",
+                options: ["تقل درجة الغليان", "تزداد درجة الغليان", "لا تتأثر درجة الغليان", "يصبح الغليان مستحيلاً"],
+                answer: 1
+            },
+            {
+                question: "ما هي الحالة التي تكون فيها الإلكترونات منفصلة عن النواة؟",
+                options: ["الحالة الصلبة", "الحالة السائلة", "الحالة الغازية", "الحالة البلازمية"],
+                answer: 3
+            },
+            {
+                question: "ما هو اسم الظاهرة التي تحدث عندما يتحول السائل إلى غاز عند سطح السائل فقط؟",
+                options: ["الغليان", "التكثف", "التبخر السطحي", "التسامي"],
+                answer: 2
+            },
+            {
+                question: "ما هي العملية التي تحدث عندما يتحول بخار الماء إلى ماء سائل؟",
+                options: ["التبخر", "التكثف", "الانصهار", "التجمد"],
+                answer: 1
+            },
+            {
+                question: "ما هو تأثير زيادة سرعة الرياح على معدل التبخر؟",
+                options: ["يقل معدل التبخر", "يزداد معدل التبخر", "لا يتأثر معدل التبخر", "يتوقف التبخر تمامًا"],
+                answer: 1
+            },
+            {
+                question: "ما هي الخاصية التي تعبر عن مقاومة السائل للانسياب؟",
+                options: ["الكثافة", "اللزوجة", "الضغط البخاري", "التوتر السطحي"],
+                answer: 1
+            },
+            {
+                question: "ما هو اسم الظاهرة التي تجعل قطرات الماء تتشكل على شكل كروي؟",
+                options: ["الكثافة", "اللزوجة", "الضغط البخاري", "التوتر السطحي"],
+                answer: 3
+            },
+            {
+                question: "ما هي الحالة التي تكون فيها المادة موصلة جيدة للكهرباء والحرارة؟",
+                options: ["الحالة الصلبة فقط", "الحالة السائلة فقط", "الحالة الغازية فقط", "الحالة البلازمية"],
+                answer: 3
+            },
+            {
+                question: "ما هو تأثير زيادة الرطوبة النسبية في الهواء على معدل التبخر؟",
+                options: ["يزداد معدل التبخر", "يقل معدل التبخر", "لا يتأثر معدل التبخر", "يتوقف التبخر تمامًا"],
+                answer: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        const nextBtn = document.getElementById("next-btn");
+        const submitBtn = document.getElementById("submit-btn");
+        const resultEl = document.getElementById("result");
+        const progressEl = document.getElementById("progress");
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionEl.textContent = question.question;
+            optionsEl.innerHTML = "";
+            for (let i = 0; i < question.options.length; i++) {
+                const option = document.createElement("button");
+                option.textContent = question.options[i];
+                option.classList.add("option");
+                option.addEventListener("click", () => selectOption(i));
+                optionsEl.appendChild(option);
+            }
+            answered = false;
+            nextBtn.style.display = "none";
+            submitBtn.style.display = "none";
+            updateProgress();
+        }
+
+        function selectOption(index) {
+            if (answered) return;
+            answered = true;
+            const options = optionsEl.getElementsByClassName("option");
+            const question = questions[currentQuestion];
+            if (index === question.answer) {
+                options[index].classList.add("correct");
+                score++;
+            } else {
+                options[index].classList.add("incorrect");
+                options[question.answer].classList.add("correct");
+            }
+            if (currentQuestion < questions.length - 1) {
+                nextBtn.style.display = "block";
+            } else {
+                submitBtn.style.display = "block";
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function submitQuiz() {
+            questionEl.style.display = "none";
+            optionsEl.style.display = "none";
+            submitBtn.style.display = "none";
+            progressEl.style.display = "none";
+            resultEl.textContent = `لقد أجبت على ${score} من أصل ${questions.length} سؤال بشكل صحيح.`;
+        }
+
+        function updateProgress() {
+            progressEl.textContent = `السؤال ${currentQuestion + 1} من ${questions.length}`;
+        }
+
+        nextBtn.addEventListener("click", nextQuestion);
+        submitBtn.addEventListener("click", submitQuiz);
+
+        loadQuestion();
+    </script>
+</body>
+</html>
